@@ -28,14 +28,14 @@ public class Main {
             setKey(secret);
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            System.out.println(contador);
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
         }
         catch (Exception e)
         {
-            System.out.println("Error while decrypting: " + e.toString());
+            //System.out.println("Error while decrypting: " + e.toString());
+            return null;
         }
-        return null;
+        //return null;
     }
 	
 	public static void setKey(String myKey) {
@@ -58,6 +58,20 @@ public class Main {
 		}
 	}
 	
+	public static <T> void tester(ArrayList<T[]> Chunks, int chunk) {
+		for(int cantidad = 0; cantidad != Chunks.get(chunk).length; cantidad ++) {
+			for(int numero = 0; numero != intList.size(); numero ++) {				
+		    	String mensaje = decrypt(message, "29dh120" + Chunks.get(chunk)[cantidad] + "dk1" + intList.get(numero) + "3");
+		    	if(mensaje != null) {
+		    		System.out.println("La llave encontrada!!  29dh120" + Chunks.get(chunk)[cantidad] + "dk1" + intList.get(numero) + "3");
+		    		System.out.println(mensaje);
+		    		System.out.println("En la iteracion "+ contador);
+		    	}
+		    	contador++;
+			}
+		}
+	}
+	
 	public static void shuffler() {	
 		Collections.shuffle(intList);
 		intList.toArray(intArray);
@@ -71,9 +85,9 @@ public class Main {
 	
 	public static <T> ArrayList<T[]> chunks(){
 	    ArrayList<T[]> chunks = new ArrayList<T[]>();
-	    int n = charList.size()/2;
-	    for (int i = 0; i < charList.size(); i += n) {
-	        T[] chunk = (T[])charList.subList(i, Math.min(charList.size(), i + n)).toArray();         
+	    int division = charList.size()/4;
+	    for (int contador = 0; contador < charList.size(); contador += division) {
+	        T[] chunk = (T[])charList.subList(contador, Math.min(charList.size(), contador + division)).toArray();         
 	        chunks.add(chunk);
 	    }
 	    return chunks;
@@ -81,21 +95,10 @@ public class Main {
 
 	public static <T> void main(String[] args) {
 		shuffler();
-		ArrayList<T[]> chunks = chunks();
+		ArrayList<T[]> Chunks = chunks();
 		
-		
-		/*
-		for (int i = 0; i < 26; i++) {
-			for(int j = 0; j < 10; j++) {
-				char ch = (char) ('a' + i);
-				char nu = (char) ('0' + j);
-				String num = Character.toString(nu);
-		    	System.out.printf("29dh120" + ch + "dk1" + nu + "3%n");
-		    	System.out.println(decrypt(message, "29dh120" + ch + "dk1" + nu + "3"));
-		    	contador++;
-			}
-		}*/
-		
-		System.out.println(chunks.get(0)[3]);
+		for(int chunk = 0; chunk != Chunks.size(); chunk++ ) {
+			tester(Chunks, chunk);
+		}
 	}
 }
