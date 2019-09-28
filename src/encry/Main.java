@@ -21,6 +21,9 @@ public class Main {
 	private static SecretKeySpec secretKey;
 	private static String message = "xZwM7BWIpSjYyGFr9rhpEa+cYVtACW7yQKmyN6OYSCv0ZEg9jWbc6lKzzCxRSSIvOvlimQZBMZOYnOwiA9yy3YU8zk4abFSItoW6Wj0ufQ0=";
 	
+	/*
+	 * Funcion encarga de la desencriptacion de datos
+	 */
 	public static String decrypt(String strToDecrypt, String secret)
     {
         try
@@ -32,12 +35,13 @@ public class Main {
         }
         catch (Exception e)
         {
-            //System.out.println("Error while decrypting: " + e.toString());
             return null;
         }
-        //return null;
     }
 	
+	/*
+	 * Funcion encargada de la conversion de la llave a la valida
+	 */
 	public static void setKey(String myKey) {
 		MessageDigest sha = null;
 		try {
@@ -46,18 +50,18 @@ public class Main {
 			key = sha.digest(key);
 			key = Arrays.copyOf(key, 16);
 			secretKey = new SecretKeySpec(key, "AES");
-			//return secretKey;
 		}
 		catch(NoSuchAlgorithmException e) {
 			e.printStackTrace();
-			//return null;
 		}
 		catch(UnsupportedEncodingException e) {
 			e.printStackTrace();
-			//return null;
 		}
 	}
 	
+	/*
+	 * Encargada de la seleccion de llaves, encuentra la valida en caso de lograr con exito la desencriptacion
+	 */
 	public static <T> void tester(ArrayList<T[]> Chunks, int chunk) {
 		for(int cantidad = 0; cantidad != Chunks.get(chunk).length; cantidad ++) {
 			for(int numero = 0; numero != intList.size(); numero ++) {				
@@ -72,6 +76,9 @@ public class Main {
 		}
 	}
 	
+	/*
+	 * Funcion shuffler aplica el shuffle a los arrays de posibilidades
+	 */
 	public static void shuffler() {	
 		Collections.shuffle(intList);
 		intList.toArray(intArray);
@@ -82,7 +89,9 @@ public class Main {
 		System.out.println(charList);
 	}
 
-	
+	/*
+	 * Da la division del array base a chunks de datos 
+	 */
 	public static <T> ArrayList<T[]> chunks(){
 	    ArrayList<T[]> chunks = new ArrayList<T[]>();
 	    int division = charList.size()/4;
@@ -93,12 +102,17 @@ public class Main {
 	    return chunks;
 	}
 
+	/*
+	 * Funcion Main
+	 */
 	public static <T> void main(String[] args) {
 		shuffler();
 		ArrayList<T[]> Chunks = chunks();
 		
-		for(int chunk = 0; chunk != Chunks.size(); chunk++ ) {
+		for(int chunk = 0; chunk != Chunks.size()/2; chunk++ ) {
 			tester(Chunks, chunk);
 		}
+		System.out.println("Si el mensaje no logro decodificarse el porcentaje de exito fue de " + 50 + " %");
+		System.out.println("Debido a la forma de aplicacion, la division de datos se da por la mitad");
 	}
 }
